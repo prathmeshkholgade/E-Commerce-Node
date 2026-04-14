@@ -6,7 +6,8 @@ const { product: Product, Review } = require("../models");
 const ExpressError = require("../utils/express_error");
 
 module.exports.createReview = async (req, res, next) => {
-    const { rating, comment, productId } = req.body;
+    const { id: productId } = req.params;
+    const { rating, comment, } = req.body;
     const userId = req.user.id;
 
     const product = await Product.findByPk(productId);
@@ -49,8 +50,7 @@ module.exports.updateReview = async (req, res, next) => {
         return next(new ExpressError(404, "Review not found"));
     }
 
-    // only owner can edit
-    if (review.userId !== userId) {
+    if (review.userId != userId) {
         return next(new ExpressError(403, "Not authorized"));
     }
 

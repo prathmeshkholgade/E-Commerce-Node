@@ -87,8 +87,7 @@ const updateProductSchema = Joi.object({
 });
 
 const reviewSchema = Joi.object({
-    rating: Joi.string().min(0).max(0).required(),
-    comment: Joi.string().min(3).max(255).required()
-
+    rating: Joi.string().min(0).max(5).required(),
+    comment: Joi.string().min(3).max(255).required(),
 });
-module.exports = { signupSchema, loginSchema, createProductSchema, updateProductSchema }
+module.exports = { signupSchema, loginSchema, createProductSchema, updateProductSchema, reviewSchema }

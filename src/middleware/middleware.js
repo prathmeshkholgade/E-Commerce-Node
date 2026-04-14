@@ -1,4 +1,4 @@
-const { signupSchema, loginSchema } = require("../utils/validations")
+const { signupSchema, loginSchema, reviewSchema } = require("../utils/validations")
 
 const jwt = require("jsonwebtoken");
 const verifyUser = (req, res, next) => {
@@ -59,7 +59,7 @@ const validateLogin = (req, res, next) => {
 
 const validateReview = (req, res, next) => {
 
-    const { error, value } = validateReview.validate(req.body, { abortEarly: true });
+    const { error, value } = reviewSchema.validate(req.body, { abortEarly: true });
 
     if (error) {
         res.json({
@@ -72,4 +72,4 @@ const validateReview = (req, res, next) => {
     next()
 }
 
-module.exports = { validateLogin, validateUserSignUp, verifyUser ,validateReview}
+module.exports = { validateLogin, validateUserSignUp, verifyUser, validateReview }
