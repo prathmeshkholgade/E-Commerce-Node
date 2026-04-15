@@ -1,0 +1,174 @@
+<% layout("layout/auth_layout.ejs") %>
+
+<div class="site-shell product-detail-page">
+  <header class="detail-header">
+    <div>
+      <p class="eyebrow">Product detail</p>
+      <h1><%= product ? product.name : "Product not found" %></h1>
+      <% if (product) { %>
+        <p>View the full listing and buy from trusted sellers.</p>
+      <% } else { %>
+        <p>The requested product could not be found.</p>
+      <% } %>
+    </div>
+    <div>
+      <a href="/product" class="back-link">← Back to shop</a>
+    </div>
+  </header>
+
+  <% if (!product) { %>
+    <div class="product-not-found">
+      <h2>Product unavailable</h2>
+      <p>We couldn't find the product you're looking for. Please return to the shop and try another item.</p>
+    </div>
+  <% } else { %>
+    <div class="detail-grid">
+      <article class="detail-image-card">
+        <img
+          class="detail-image"
+          src="<%= product.image && product.image.trim() ? product.image : '/images/default-product.svg' %>"
+          alt="<%= product.name %>"
+          onerror="this.onerror=null;this.src='/images/default-product.svg'"
+        />
+      </article>
+
+      <article class="detail-info-card">
+        <div class="detail-meta">
+          <span><strong>Seller:</strong> <%= product.user?.fullName || product.user?.email || 'Seller' %></span>
+          <span><strong>Product ID:</strong> <%= product.id %></span>
+          <span><strong>Posted:</strong> <%= new Date(product.createdAt).toLocaleDateString() %></span>
+        </div>
+
+        <div>
+          <p class="detail-price">₹<%= product.price %></p>
+          <p class="detail-description"><%= product.description || 'No description available.' %></p>
+        </div>
+
+        <div class="detail-spec">
+          <span><strong>Category:</strong> General</span>
+          <span><strong>Stock status:</strong> Available</span>
+        </div>
+
+        <div class="detail-actions">
+          <form class="buy-form" data-product-id="<%= product.id %>">
+            <input type="hidden" name="productId" value="<%= product.id %>" />
+            <input type="hidden" name="quantity" value="1" />
+            <button type="submit" class="btn-primary">Add to cart</button>
+          </form>
+          <a href="/cart" class="back-link">View cart</a>
+        </div>
+      </article>
+    </div>
+
+    <section class="detail-reviews">
+      <div class="review-header">
+        <div>
+          <h3>Reviews</h3>
+          <p class="review-summary"><%= product.Reviews.length %> review<%= product.Reviews.length === 1 ? '' : 's' %></p>
+        </div>
+      </div>
+
+      <% if (product.Reviews.length === 0) { %>
+        <div class="product-empty">
+          <p>No reviews yet. Be the first to share your experience.</p>
+        </div>
+      <% } else { %>
+        <div class="review-list">
+          <% product.Reviews.forEach((review) => { %>
+            <article class="review-card">
+              <div class="review-card-top">
+                <div>
+                  <strong><%= review.user?.fullName || review.user?.email || 'Anonymous' %></strong>
+                  <span class="review-rating">⭐ <%= review.rating %> / 5</span>
+                </div>
+                <span class="review-date"><%= new Date(review.createdAt).toLocaleDateString() %></span>
+              </div>
+              <p class="review-text"><%= review.comment %></p>
+            </article>
+          <% }) %>
+        </div>
+      <% } %>
+
+      <article class="review-form-card">
+        <h4>Leave a review</h4>
+        <form id="review-form" class="review-form" action="/review/<%= product.id %>" method="POST">
+          <div class="review-form-field">
+            <label for="rating">Rating</label>
+            <select id="rating" name="rating" required>
+              <option value="">Select rating</option>
+              <option value="5">5 - Excellent</option>
+              <option value="4">4 - Very good</option>
+              <option value="3">3 - Good</option>
+              <option value="2">2 - Fair</option>
+              <option value="1">1 - Poor</option>
+            </select>
+          </div>
+          <div class="review-form-field review-comment-field">
+            <label for="comment">Comment</label>
+            <textarea id="comment" name="comment" rows="4" placeholder="Write your review" required></textarea>
+          </div>
+          <button type="submit" class="btn-primary review-submit">Submit review</button>
+        </form>
+      </article>
+    </section>
+  <% } %>
+</div>
+
+<script>
+  const detailForm = document.querySelector('.buy-form');
+  if (detailForm) {
+    detailForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const productId = detailForm.querySelector('[name="productId"]').value;
+      const quantity = detailForm.querySelector('[name="quantity"]').value;
+
+      try {
+        const response = await fetch('/cart/add', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify({ productId, quantity }),
+        });
+        const result = await response.json();
+        alert(result.message || 'Added to cart');
+      } catch (error) {
+        alert('Unable to add to cart right now.');
+      }
+    });
+  }
+
+  const reviewForm = document.getElementById('review-form');
+  if (reviewForm) {
+    reviewForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const formData = new FormData(reviewForm);
+      const payload = {
+        rating: formData.get('rating'),
+        comment: formData.get('comment'),
+      };
+      const productId = '<%= product?.id %>';
+
+      try {
+        const response = await fetch(`/review/${productId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+        const result = await response.json();
+        if (response.ok) {
+          alert(result.message || 'Review submitted');
+          window.location.reload();
+        } else {
+          alert(result.message || 'Unable to submit review');
+        }
+      } catch (error) {
+        alert('Unable to submit review right now.');
+      }
+    });
+  }
+</script>

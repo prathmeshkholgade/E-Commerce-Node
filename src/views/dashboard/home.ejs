@@ -1,0 +1,100 @@
+<% layout("layout/auth_layout.ejs") %>
+
+<div class="site-shell">
+  <header class="site-header">
+    <div class="brand-row">
+      <div class="brand-logo">ShopEase</div>
+      <nav class="site-nav">
+        <a href="/product">Shop</a>
+        <a href="/product/new">Sell</a>
+        <a href="/cart">Cart</a>
+      </nav>
+    </div>
+
+    <div class="hero-banner">
+      <div>
+        <span class="eyebrow">Discover</span>
+        <h1>Buy great products from real sellers.</h1>
+        <p>Browse all available items, add them to your cart, and checkout when you're ready.</p>
+      </div>
+      <a class="btn-primary hero-btn" href="/product/new">List a product</a>
+    </div>
+  </header>
+
+  <main class="shop-main">
+    <section class="product-summary">
+      <div>
+        <h2>All products</h2>
+        <p>Products are listed from every seller. Click "Buy" to add an item to your cart.</p>
+      </div>
+      <span class="product-count"><%= products.length %> items available</span>
+    </section>
+
+    <% if (products.length === 0) { %>
+      <div class="product-empty">
+        <h3>No products available yet.</h3>
+        <p>Come back later or create your first listing.</p>
+      </div>
+    <% } else { %>
+      <section class="product-grid">
+        <% products.forEach((product) => { %>
+          <article class="product-card">
+            <a class="product-card-preview" href="/product/<%= product.id %>">
+              <img
+                class="product-card-image"
+                src="<%= product.image && product.image.trim() ? product.image : '/images/default-product.svg' %>"
+                alt="<%= product.name %>"
+                onerror="this.onerror=null;this.src='/images/default-product.svg'"
+              />
+              <div class="product-card-top">
+                <div>
+                  <h3><%= product.name %></h3>
+                  <p class="product-seller">Sold by <%= product.user?.fullName || product.user?.email || 'Seller' %></p>
+                </div>
+                <strong class="product-price">₹<%= product.price %></strong>
+              </div>
+            </a>
+            <div class="product-card-body">
+              <p class="product-description"><%= product.description %></p>
+              <form class="buy-form" data-product-id="<%= product.id %>">
+                <input type="hidden" name="productId" value="<%= product.id %>" />
+                <input type="hidden" name="quantity" value="1" />
+                <button type="submit" class="btn-primary buy-button">Buy</button>
+              </form>
+            </div>
+          </article>
+        <% }) %>
+      </section>
+    <% } %>
+  </main>
+
+  <footer class="site-footer">
+    <p>Simple storefront for browsing and buying products. Designed for buyers and creators.</p>
+  </footer>
+</div>
+
+<script>
+  const buyForms = document.querySelectorAll('.buy-form');
+  buyForms.forEach((form) => {
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const productId = form.querySelector('[name="productId"]').value;
+      const quantity = form.querySelector('[name="quantity"]').value;
+
+      try {
+        const response = await fetch('/cart/add', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify({ productId, quantity }),
+        });
+        const result = await response.json();
+        alert(result.message || 'Added to cart');
+      } catch (error) {
+        alert('Unable to add to cart right now.');
+      }
+    });
+  });
+</script>

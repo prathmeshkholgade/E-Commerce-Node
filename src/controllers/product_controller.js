@@ -1,9 +1,55 @@
-const { product } = require("../models");
+const { product, user, Review } = require("../models");
+
+module.exports.renderHomePage = async (req, res) => {
+    const products = await product.findAll({
+        include: [
+            {
+                model: user,
+                attributes: ["fullName", "email"],
+            },
+        ],
+    });
+
+    return res.render("dashboard/home.ejs", { products, user: req.user });
+}
+
+module.exports.renderCreateProductPage = async (req, res) => {
+    return res.render("product/create.ejs", { user: req.user });
+}
+
+module.exports.renderProductDetail = async (req, res) => {
+    const { id } = req.params;
+    const p = await product.findOne({
+        where: {
+            id: id,
+        },
+        include: [
+            {
+                model: user,
+                attributes: ["fullName", "email"],
+            },
+            {
+                model: Review,
+                include: [
+                    {
+                        model: user,
+                        attributes: ["fullName", "email"],
+                    },
+                ],
+            },
+        ],
+        order: [[Review, "createdAt", "DESC"]],
+    });
+
+    if (!p) {
+        return res.status(404).render("dashboard/product_detail.ejs", { product: null });
+    }
+
+    return res.render("dashboard/product_detail.ejs", { product: p });
+}
 
 module.exports.createProduct = async (req, res) => {
-
     const { name, price, image, description } = req.body;
-
     const userId = req.user.id;
 
     const newProduct = await product.create({
@@ -11,16 +57,18 @@ module.exports.createProduct = async (req, res) => {
         price,
         image,
         description,
-        userId: userId
-    })
+        userId: userId,
+    });
 
-    res.json({
-        message: "new product created ",
-        status: 200,
-        newProduct
-    })
+    if (req.headers.accept && req.headers.accept.includes("application/json")) {
+        return res.json({
+            message: "new product created",
+            status: 200,
+            newProduct,
+        });
+    }
 
-
+    return res.redirect("/product");
 }
 
 

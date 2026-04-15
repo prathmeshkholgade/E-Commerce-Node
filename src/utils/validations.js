@@ -10,7 +10,7 @@ const signupSchema = Joi.object({
             "string.empty": "Full name is required",
             "string.min": "Full name must be at least 3 characters",
         }),
-
+    phone: Joi.string(),
     email: Joi.string()
         .email()
         .required()

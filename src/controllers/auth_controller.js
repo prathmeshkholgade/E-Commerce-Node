@@ -1,9 +1,12 @@
 const { user } = require("../models");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const path = require("path");
 const { generateToken } = require("../utils/helper");
+
 module.exports.signUpUser = async (req, res) => {
-    const { fullName, email, password } = req.body;
+    console.log(req.body);
+    const { fullName, email, password, phone } = req.body;
 
     const existingUser = await user.findOne({
         where: {
@@ -14,24 +17,34 @@ module.exports.signUpUser = async (req, res) => {
     if (existingUser) {
         return res.json({ message: "user already exist with this email", status: 200 })
     }
-
+    console.log(phone);
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await user.create({
         fullName,
         email,
-        password: hashedPassword
+        password: hashedPassword,
+        phone
     });
 
-    const token = await generateToken(newUser.id);
-    return res.json({
-        message: "user register successfully",
-        token: token,
-        user: {
-            name: newUser.fullName,
-            email: newUser.email
-        }
-    });
+    const token = generateToken(newUser.id);
+    res.cookie("token", token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "strict",
+
+    })
+
+    return res.redirect("/product")
+
+    // return res.json({
+    //     message: "user register successfully",
+    //     token: token,
+    //     user: {
+    //         name: newUser.fullName,
+    //         email: newUser.email
+    //     }
+    // });
 
 }
 
@@ -51,13 +64,14 @@ module.exports.logIn = async (req, res) => {
     if (!isMatch) res.json({ message: "invalid credentials", status: 500 });
     const token = generateToken(existingUser.id);
 
-    res.json({
-        message: "user log in successfully", status: 200, token, user: {
-            fullName: existingUser.fullName,
-            email: existingUser.email,
-        }
+    res.cookie("token", token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "strict",
+
     })
 
-
+    return res.redirect("/product")
 
 }
+

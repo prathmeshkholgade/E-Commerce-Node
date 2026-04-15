@@ -1,0 +1,59 @@
+<% layout("layout/auth_layout.ejs") %>
+
+  <div class="login-container">
+    <div class="left-login-section">
+      <div class="brand-panel">
+        <span class="eyebrow">Curated Commerce</span>
+        <h1>Atelier</h1>
+        <p>
+          Discover refined pieces, timeless accents, and a calmer way to shop for
+          your space.
+        </p>
+        <div class="feature-list">
+          <div class="feature-item">
+            <span class="feature-icon">01</span>
+            <div>
+              <h3>Thoughtful Collections</h3>
+              <p>Handpicked designs that feel elevated, useful, and personal.</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">02</span>
+            <div>
+              <h3>Simple Shopping</h3>
+              <p>Fast access to saved items, order history, and tailored picks.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="right-login-section">
+      <div class="login-form">
+        <span class="form-tag">Member Login</span>
+        <h2>Welcome back</h2>
+        <p class="form-intro">Please enter your details to sign in.</p>
+        <form class="form" action="/auth/login" method="post">
+          <label class="input-group">
+            <span>Email Address</span>
+            <input type="email" name="email" placeholder="name@gmail.com" required />
+          </label>
+          <label class="input-group">
+            <span>Password</span>
+            <input type="password" name="password" placeholder="Enter your password" required />
+          </label>
+          <div class="form-row">
+            <label class="remember-me">
+              <input type="checkbox" name="remember" />
+              <span>Keep me signed in</span>
+            </label>
+            <a href="#" class="text-link">Forgot password?</a>
+          </div>
+          <button type="submit" class="login-btn">Sign In</button>
+          <p class="signup-copy">
+            New here?
+            <a href="/auth/signup" class="text-link">Create an account</a>
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
