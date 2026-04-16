@@ -31,7 +31,7 @@ module.exports.signUpUser = async (req, res) => {
     res.cookie("token", token, {
         httpOnly: true,
         secure: false,
-        sameSite: "strict",
+        sameSite: "lax",
 
     })
 
@@ -67,8 +67,7 @@ module.exports.logIn = async (req, res) => {
     res.cookie("token", token, {
         httpOnly: true,
         secure: false,
-        sameSite: "strict",
-
+        sameSite: "lax",
     })
 
     return res.redirect("/product")

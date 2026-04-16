@@ -1,0 +1,134 @@
+<% layout("layout/dashboard_layout.ejs") %>
+
+<div class="site-shell">
+
+  <main class="cart-main">
+    <section class="cart-summary">
+      <div>
+        <h1>Your cart</h1>
+        <p>Review your selected items before checking out.</p>
+      </div>
+
+      <span class="product-count">
+        <%= carts?.cartItems?.length || 0 %> item<%= carts?.cartItems?.length === 1 ? '' : 's' %>
+      </span>
+    </section>
+
+    <% if (!carts || !carts.cartItems || carts.cartItems.length === 0) { %>
+
+      
+      <div class="product-empty">
+        <h3>Your cart is empty</h3>
+        <p>Add items from the shop to see them here.</p>
+        <a href="/product" class="back-link">Continue shopping</a>
+      </div>
+
+    <% } else { %>
+
+      <% let totalItems = 0; let subtotal = 0; %>
+
+      <div class="cart-layout">
+
+       
+        <section class="cart-items">
+
+          <% carts.cartItems.forEach((item) => { 
+              const product = item.product; 
+
+              if (!product) return; 
+
+              const price = Number(product.price || 0); 
+              const itemTotal = price * item.quantity;
+
+              totalItems += item.quantity;
+              subtotal += itemTotal;
+          %>
+
+            <article class="cart-item-card">
+
+              <img
+                class="cart-item-image"
+                src="<%= product.image && product.image.trim() ? product.image : '/images/default-product.svg' %>"
+                alt="<%= product.name %>"
+                onerror="this.onerror=null;this.src='/images/default-product.svg'"
+              />
+
+              <div class="cart-item-content">
+
+                <div class="cart-item-meta">
+                  <h3><%= product.name %></h3>
+                  <p class="cart-item-price">₹<%= price %> each</p>
+                </div>
+
+                <div class="cart-item-actions">
+                  <form class="cart-quantity-form" data-cart-item-id="<%= item.id %>">
+                    <label for="quantity-<%= item.id %>">Qty</label>
+                    <input 
+                      id="quantity-<%= item.id %>" 
+                      type="number" 
+                      min="1" 
+                      name="quantity" 
+                      value="<%= item.quantity %>" 
+                    />
+                  </form>
+
+                  <button 
+                    class="btn-secondary remove-item-button" 
+                    type="button" 
+                    data-item_id="<%= item.id %>"
+                  >
+                    Remove
+                  </button>
+
+                </div>
+
+              </div>
+
+              <div class="cart-item-total">
+                <span>Subtotal</span>
+                <strong>₹<%= itemTotal %></strong>
+              </div>
+
+            </article>
+
+          <% }) %>
+
+        </section>
+
+        <!-- SIDEBAR -->
+        <aside class="cart-sidebar">
+          <div class="checkout-card">
+
+            <h2>Order summary</h2>
+
+            <div class="checkout-row">
+              <span>Items</span>
+              <span><%= totalItems %></span>
+            </div>
+
+            <div class="checkout-row">
+              <span>Subtotal</span>
+              <strong>₹<%= subtotal %></strong>
+            </div>
+
+            <button class="btn-primary checkout-btn" type="button">
+              Checkout
+            </button>
+
+            <p class="checkout-note">
+              Checkout is not implemented yet. Use this page to review your cart.
+            </p>
+
+          </div>
+        </aside>
+
+      </div>
+
+    <% } %>
+  </main>
+
+  <footer class="site-footer">
+    <p>Manage cart items and adjust quantities before purchase.</p>
+  </footer>
+
+</div>

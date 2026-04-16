@@ -1,17 +1,6 @@
-<% layout("layout/auth_layout.ejs") %>
+<% layout("layout/dashboard_layout.ejs") %>
 
 <div class="site-shell">
-  <header class="site-header">
-    <div class="brand-row">
-      <div class="brand-logo">ShopEase</div>
-      <nav class="site-nav">
-        <a href="/product">Shop</a>
-        <a href="/product/new" class="active">Sell</a>
-        <a href="/cart">Cart</a>
-      </nav>
-    </div>
-  </header>
-
   <main class="create-main">
     <section class="create-panel">
       <span class="eyebrow">List product</span>
@@ -21,19 +10,39 @@
       <form class="form-grid" action="/product/create" method="POST">
         <div class="input-group">
           <span>Product name</span>
-          <input type="text" name="name" placeholder="Enter product name" required />
+          <input
+            type="text"
+            name="name"
+            placeholder="Enter product name"
+            required
+          />
         </div>
         <div class="input-group">
           <span>Price</span>
-          <input type="number" name="price" step="0.01" min="0" placeholder="0.00" required />
+          <input
+            type="number"
+            name="price"
+            step="0.01"
+            min="0"
+            placeholder="0.00"
+            required
+          />
         </div>
         <div class="input-group">
           <span>Image URL</span>
-          <input type="url" name="image" placeholder="https://example.com/image.jpg" />
+          <input
+            type="url"
+            name="image"
+            placeholder="https://example.com/image.jpg"
+          />
         </div>
         <div class="input-group input-fullwidth">
           <span>Description</span>
-          <textarea name="description" placeholder="Write a short product description" required></textarea>
+          <textarea
+            name="description"
+            placeholder="Write a short product description"
+            required
+          ></textarea>
         </div>
         <button type="submit" class="btn-primary">Publish product</button>
       </form>

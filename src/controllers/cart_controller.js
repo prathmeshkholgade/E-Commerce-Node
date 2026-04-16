@@ -21,7 +21,11 @@ module.exports.getAllCarts = async (req, res) => {
         }],
     })
 
-    res.json({ carts })
+    // res.json({ carts });
+    // return
+    return res.render("dashboard/cart.ejs", { carts })
+
+
 }
 
 
@@ -62,7 +66,7 @@ module.exports.addToCart = async (req, res) => {
 module.exports.updateCartItem = async (req, res) => {
     const { id } = req.params;
     const { quantity } = req.body;
-
+    console.log(`cart update route hit  ${id} ${quantity}`);
     const item = await CartItem.findByPk(id);
 
     if (!item) {
@@ -78,7 +82,6 @@ module.exports.updateCartItem = async (req, res) => {
 
 module.exports.removeItem = async (req, res) => {
     const { id } = req.params;
-
     const item = await CartItem.findByPk(id);
 
     if (!item) {
@@ -87,5 +90,9 @@ module.exports.removeItem = async (req, res) => {
 
     await item.destroy();
 
-    res.json({ message: "Item removed" });
+    return res.json({ message: "Item removed" });
 };
+
+module.exports.renderCartScreen = async (req, res) => {
+    return res.render("/dashboard/cart.ejs")
+}

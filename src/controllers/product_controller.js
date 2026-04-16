@@ -1,4 +1,5 @@
 const { product, user, Review } = require("../models");
+const stripe = require("stripe");
 
 module.exports.renderHomePage = async (req, res) => {
     const products = await product.findAll({
@@ -143,4 +144,9 @@ module.exports.deleteProduct = async (req, res) => {
         message: "product deleted successfully",
         status: 200
     });
+}
+
+
+module.exports.checkOut = async (req, res) => {
+
 }
