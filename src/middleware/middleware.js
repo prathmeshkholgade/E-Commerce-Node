@@ -1,25 +1,23 @@
+const { verifyToken } = require("../config/jwt");
 const { signupSchema, loginSchema, reviewSchema } = require("../utils/validations")
-
 const jwt = require("jsonwebtoken");
+
+
 const verifyUser = (req, res, next) => {
     try {
         let token = req.cookies?.token || req.headers.authorization;
-
         if (token && token.startsWith("Bearer ")) {
             token = token.split(" ")[1];
         }
-        // console.log(`token ${token}`);
         if (!token) {
             return res.status(401).json({
                 success: false,
                 message: "Unauthorized - No token provided",
             });
         }
-
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
+        const decoded = verifyToken(token)
         req.user = decoded;
-
+        res.locals.currentUserId = decoded.id;
         next();
     } catch (error) {
         next(error)
@@ -28,16 +26,13 @@ const verifyUser = (req, res, next) => {
 
 
 const validateUserSignUp = (req, res, next) => {
-
     const { error, value } = signupSchema.validate(req.body, { abortEarly: true });
-
     if (error) {
         res.json({
             message: error.details[0].message,
             status: 400
         })
     }
-
     req.body = value
     next()
 }

@@ -5,7 +5,7 @@ const path = require("path");
 const { generateToken } = require("../utils/helper");
 
 module.exports.signUpUser = async (req, res) => {
-    console.log(req.body);
+
     const { fullName, email, password, phone } = req.body;
 
     const existingUser = await user.findOne({
@@ -17,7 +17,7 @@ module.exports.signUpUser = async (req, res) => {
     if (existingUser) {
         return res.json({ message: "user already exist with this email", status: 200 })
     }
-    console.log(phone);
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await user.create({
@@ -35,7 +35,7 @@ module.exports.signUpUser = async (req, res) => {
 
     })
 
-    return res.redirect("/product")
+    return res.redirect("/product");
 
     // return res.json({
     //     message: "user register successfully",

@@ -4,15 +4,16 @@
   <main class="create-main">
     <section class="create-panel">
       <span class="eyebrow">List product</span>
-      <h1>Create a new product listing</h1>
+      <h1><%= product ? "Edit product" : "Create a new product listing" %></h1>
       <p>Enter the product details and publish it for buyers to discover.</p>
 
-      <form class="form-grid" action="/product/create" method="POST">
+      <form class="form-grid" action="<%= product ? "/product/create":`/product/edit/${product.id}?_method=PUT` %>" method="POST">
         <div class="input-group">
           <span>Product name</span>
           <input
             type="text"
             name="name"
+            value="<%=product?  product.name:"" %>"
             placeholder="Enter product name"
             required
           />
@@ -20,6 +21,7 @@
         <div class="input-group">
           <span>Price</span>
           <input
+           value="<%= product ? product.price :" "%>"
             type="number"
             name="price"
             step="0.01"
@@ -33,6 +35,7 @@
           <input
             type="url"
             name="image"
+            value="<%= product? product.image :""%>"
             placeholder="https://example.com/image.jpg"
           />
         </div>
@@ -40,12 +43,22 @@
           <span>Description</span>
           <textarea
             name="description"
+         
             placeholder="Write a short product description"
             required
-          ></textarea>
+          >    <%= product?  product.description :""%></textarea>
         </div>
-        <button type="submit" class="btn-primary">Publish product</button>
-      </form>
+       <% if (product) { %>
+  <button class=" btn-primary"  type="submit">
+    Edit Product
+  </button>
+<% } else { %>
+  <button class="btn-primary" type="submit">
+    Publish Product
+  </button>
+<% } %>
+
+      </form
     </section>
   </main>
 

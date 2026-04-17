@@ -1,5 +1,4 @@
 const { product, user, Review } = require("../models");
-const stripe = require("stripe");
 
 module.exports.renderHomePage = async (req, res) => {
     const products = await product.findAll({
@@ -15,7 +14,7 @@ module.exports.renderHomePage = async (req, res) => {
 }
 
 module.exports.renderCreateProductPage = async (req, res) => {
-    return res.render("product/create.ejs", { user: req.user });
+    return res.render("product/create.ejs", { product: null });
 }
 
 module.exports.renderProductDetail = async (req, res) => {
@@ -27,7 +26,7 @@ module.exports.renderProductDetail = async (req, res) => {
         include: [
             {
                 model: user,
-                attributes: ["fullName", "email"],
+                attributes: ["fullName", "email", "id"],
             },
             {
                 model: Review,
@@ -53,7 +52,7 @@ module.exports.createProduct = async (req, res) => {
     const { name, price, image, description } = req.body;
     const userId = req.user.id;
 
-    const newProduct = await product.create({
+    await product.create({
         name,
         price,
         image,
@@ -61,18 +60,26 @@ module.exports.createProduct = async (req, res) => {
         userId: userId,
     });
 
-    if (req.headers.accept && req.headers.accept.includes("application/json")) {
-        return res.json({
-            message: "new product created",
-            status: 200,
-            newProduct,
-        });
-    }
 
     return res.redirect("/product");
 }
 
+module.exports.renderEditPage = async (req, res) => {
+    const { id } = req.params;
+    if (!id) {
+        res.redirect("/product")
+    }
+    const p = await product.findOne({
+        attributes: {
+            exclude: ["createdAt", "updatedAt"]
+        },
+        where: {
+            id: id
+        }
+    });
 
+    return res.render("product/create.ejs", { product: p });
+}
 
 module.exports.editProduct = async (req, res) => {
 
@@ -85,7 +92,8 @@ module.exports.editProduct = async (req, res) => {
         where: {
             id: id
         }
-    })
+    });
+
     if (!isProductExist) return res.json({ message: "product not founud", status: 400 })
 
     if (userId != isProductExist.userId) return res.json({ message: "you are not authorized to perform this operation", status: 400 });
@@ -104,14 +112,11 @@ module.exports.editProduct = async (req, res) => {
             }
         }
     )
-
     res.json({
         message: " product updated",
         status: 200,
         updatedProduct
     })
-
-
 }
 
 
@@ -131,14 +136,12 @@ module.exports.deleteProduct = async (req, res) => {
     });
 
     if (userId != p.userId) {
-
-
         return res.json({
             message: "u re not authorized to perform this operation",
             status: 400
         })
     }
-    await p.destroy()
+    await p.destroy();
 
     return res.json({
         message: "product deleted successfully",
@@ -147,6 +150,3 @@ module.exports.deleteProduct = async (req, res) => {
 }
 
 
-module.exports.checkOut = async (req, res) => {
-
-}

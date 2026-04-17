@@ -12,10 +12,11 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Review.belongsTo(models.user, {
         foreignKey: "userId"
-      }),
-        Review.belongsTo(models.product, {
-          foreignKey: "productId"
-        })
+      })
+      Review.belongsTo(models.product, {
+        foreignKey: "productId",
+        onDelete: "CASCADE"
+      })
       // define association here
     }
   }
@@ -36,8 +37,6 @@ module.exports = (sequelize, DataTypes) => {
     productId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-   
-
     }
   }, {
     sequelize,

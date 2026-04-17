@@ -24,7 +24,7 @@ module.exports.webHookHandler = (req, res) => {
 
     switch (event.type) {
         case "checkout.session.completed":
-            console.log("✅ Payment Success");
+            console.log(" Payment Success");
             const session = event.data.object;
             console.log("Session:", session.id);
             console.log("Amount:", session.amount_total);
