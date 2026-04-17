@@ -36,16 +36,6 @@ module.exports.signUpUser = async (req, res) => {
     })
 
     return res.redirect("/product");
-
-    // return res.json({
-    //     message: "user register successfully",
-    //     token: token,
-    //     user: {
-    //         name: newUser.fullName,
-    //         email: newUser.email
-    //     }
-    // });
-
 }
 
 module.exports.logIn = async (req, res) => {

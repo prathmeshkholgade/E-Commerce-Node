@@ -3,7 +3,7 @@
 const stripe = require("../config/stripe")
 
 module.exports.webHookHandler = (req, res) => {
-    console.log("webhook hit");
+    
 
     const signature = req.headers["stripe-signature"];
 

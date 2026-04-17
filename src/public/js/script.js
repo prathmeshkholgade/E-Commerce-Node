@@ -42,8 +42,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const quantity = e.target.value;
             const cartItemId = form.dataset.cartItemId;
 
-            console.log(`cart id ${cartItemId}`);
-            console.log(`qty id ${quantity}`);
             try {
                 const res = await axios.patch(`/cart/item/${cartItemId}`, {
                     quantity: quantity,

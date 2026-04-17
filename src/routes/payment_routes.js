@@ -39,7 +39,7 @@ router.post("/create-payment-intent", verifyUser, async (req, res) => {
         total += price * item.quantity;
     });
 
-    console.log(total);
+    
 
     const paymentIntent = await stripe.paymentIntents.create({
         amount: total * 100,
@@ -106,7 +106,7 @@ router.post("/create-payment", verifyUser, async (req, res) => {
 
     res.json({ url: session.url });
 
-    console.log(total);
+   
 });
 
 

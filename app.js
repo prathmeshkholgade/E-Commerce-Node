@@ -34,7 +34,7 @@ app.use("/product", productRoutes);
 
 
 
-app.use(globalErrorHandler)
+app.use(globalErrorHandler);
 
 
 app.listen(port, () => {

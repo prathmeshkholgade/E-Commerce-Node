@@ -12,8 +12,6 @@ const sendOTP = async (mobile) => {
                 },
             }
         );
-
-        console.log(response.data);
         return response.data;
     } catch (err) {
         console.error(err.response?.data || err.message);
