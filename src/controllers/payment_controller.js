@@ -2,13 +2,9 @@
 
 const stripe = require("../config/stripe")
 
-module.exports.webHookHandler = (req, res) => {
-    
-
+const webHookHandler = (req, res) => {
     const signature = req.headers["stripe-signature"];
-
     let event;
-
     try {
         event = stripe.webhooks.constructEvent(
             req.body,
@@ -36,3 +32,5 @@ module.exports.webHookHandler = (req, res) => {
 
     res.json({ received: true });
 }
+
+module.exports = { webHookHandler };

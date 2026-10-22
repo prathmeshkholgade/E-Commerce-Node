@@ -20,8 +20,19 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   cartItem.init({
-    cartId: { allowNull: false, type: DataTypes.INTEGER },
-    productId: { type: DataTypes.INTEGER, allowNull: false },
+    cartId: {
+      allowNull: false, type: DataTypes.INTEGER,
+      references: {
+        model: "carts",
+        key: "id"
+      }
+    },
+    productId: {
+      type: DataTypes.INTEGER, allowNull: false, references: {
+        model: "products",
+        key: "id"
+      }
+    },
     quantity: { type: DataTypes.INTEGER, allowNull: false }
   }, {
     sequelize,

@@ -5,7 +5,7 @@
 const { product: Product, Review } = require("../models");
 const ExpressError = require("../utils/express_error");
 
-module.exports.createReview = async (req, res, next) => {
+const createReview = async (req, res, next) => {
     const { id: productId } = req.params;
     const { rating, comment, } = req.body;
     const userId = req.user.id;
@@ -37,9 +37,7 @@ module.exports.createReview = async (req, res, next) => {
     });
 };
 
-
-
-module.exports.updateReview = async (req, res, next) => {
+const updateReview = async (req, res, next) => {
     const { id } = req.params;
     const { rating, comment } = req.body;
     const userId = req.user.id;
@@ -65,8 +63,7 @@ module.exports.updateReview = async (req, res, next) => {
     });
 };
 
-
-module.exports.deleteReview = async (req, res, next) => {
+const deleteReview = async (req, res, next) => {
     const { id } = req.params;
     const userId = req.user.id;
 
@@ -90,7 +87,7 @@ module.exports.deleteReview = async (req, res, next) => {
 
 
 
-
+module.exports = { createReview, updateReview, deleteReview, }
 
 
 

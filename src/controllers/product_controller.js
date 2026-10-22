@@ -1,6 +1,5 @@
 const { product, user, Review } = require("../models");
-
-module.exports.renderHomePage = async (req, res) => {
+const renderHomePage = async (req, res) => {
     const products = await product.findAll({
         include: [
             {
@@ -13,11 +12,11 @@ module.exports.renderHomePage = async (req, res) => {
     return res.render("dashboard/home.ejs", { products, user: req.user });
 }
 
-module.exports.renderCreateProductPage = async (req, res) => {
+const renderCreateProductPage = async (req, res) => {
     return res.render("product/create.ejs", { product: null });
 }
 
-module.exports.renderProductDetail = async (req, res) => {
+const renderProductDetail = async (req, res) => {
     const { id } = req.params;
     const p = await product.findOne({
         where: {
@@ -47,8 +46,7 @@ module.exports.renderProductDetail = async (req, res) => {
 
     return res.render("dashboard/product_detail.ejs", { product: p });
 }
-
-module.exports.createProduct = async (req, res) => {
+const createProduct = async (req, res) => {
     const { name, price, image, description } = req.body;
     const userId = req.user.id;
 
@@ -64,7 +62,7 @@ module.exports.createProduct = async (req, res) => {
     return res.redirect("/product");
 }
 
-module.exports.renderEditPage = async (req, res) => {
+const renderEditPage = async (req, res) => {
     const { id } = req.params;
     if (!id) {
         res.redirect("/product")
@@ -81,7 +79,7 @@ module.exports.renderEditPage = async (req, res) => {
     return res.render("product/create.ejs", { product: p });
 }
 
-module.exports.editProduct = async (req, res) => {
+const editProduct = async (req, res) => {
 
     const { id } = req.params;
 
@@ -120,7 +118,7 @@ module.exports.editProduct = async (req, res) => {
 }
 
 
-module.exports.deleteProduct = async (req, res) => {
+const deleteProduct = async (req, res) => {
     const { id } = req.params;
 
     const userId = req.user.id;
@@ -150,3 +148,4 @@ module.exports.deleteProduct = async (req, res) => {
 }
 
 
+module.exports = { renderHomePage, renderCreateProductPage, renderProductDetail, createProduct, renderEditPage, editProduct, deleteProduct }

@@ -1,10 +1,9 @@
 const { user } = require("../models");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const path = require("path");
 const { generateToken } = require("../utils/helper");
 
-module.exports.signUpUser = async (req, res) => {
+const signUpUser = async (req, res) => {
 
     const { fullName, email, password, phone } = req.body;
 
@@ -15,7 +14,7 @@ module.exports.signUpUser = async (req, res) => {
     });
 
     if (existingUser) {
-        return res.json({ message: "user already exist with this email", status: 200 })
+        return res.json({ message: "user already exist with this email", status: 400 })
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -38,7 +37,7 @@ module.exports.signUpUser = async (req, res) => {
     return res.redirect("/product");
 }
 
-module.exports.logIn = async (req, res) => {
+const logIn = async (req, res) => {
 
     const { email, password } = req.body;
     const existingUser = await user.findOne({
@@ -47,7 +46,10 @@ module.exports.logIn = async (req, res) => {
         }
     })
     if (!existingUser) {
-        return res.json({ messsage: "user not found with this email", status: 400 })
+        return res.json({
+            messsage: "email or password is incorrect"
+            , status: 400
+        })
     }
 
     const isMatch = await bcrypt.compare(password, existingUser.password);
@@ -64,3 +66,4 @@ module.exports.logIn = async (req, res) => {
 
 }
 
+module.exports = { logIn, signUpUser }

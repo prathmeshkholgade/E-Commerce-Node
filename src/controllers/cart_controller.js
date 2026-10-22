@@ -2,9 +2,7 @@
 const { cart: Cart, cartItem: CartItem, product: Product } = require("../models");
 const cartitem = require("../models");
 
-
-
-module.exports.getAllCarts = async (req, res) => {
+const getAllCarts = async (req, res) => {
     const userId = req.user.id;
 
     const carts = await Cart.findOne({
@@ -21,14 +19,12 @@ module.exports.getAllCarts = async (req, res) => {
         }],
     })
 
-    
+
     return res.render("dashboard/cart.ejs", { carts })
 
 
 }
-
-
-module.exports.addToCart = async (req, res) => {
+const addToCart = async (req, res) => {
     const userId = req.user.id;
     const { productId, quantity } = req.body;
 
@@ -62,10 +58,10 @@ module.exports.addToCart = async (req, res) => {
 
 
 
-module.exports.updateCartItem = async (req, res) => {
+const updateCartItem = async (req, res) => {
     const { id } = req.params;
     const { quantity } = req.body;
-    
+
     const item = await CartItem.findByPk(id);
 
     if (!item) {
@@ -79,7 +75,7 @@ module.exports.updateCartItem = async (req, res) => {
 };
 
 
-module.exports.removeItem = async (req, res) => {
+const removeItem = async (req, res) => {
     const { id } = req.params;
     const item = await CartItem.findByPk(id);
 
@@ -92,6 +88,8 @@ module.exports.removeItem = async (req, res) => {
     return res.json({ message: "Item removed" });
 };
 
-module.exports.renderCartScreen = async (req, res) => {
+const renderCartScreen = async (req, res) => {
     return res.render("/dashboard/cart.ejs")
 }
+
+module.exports = { getAllCarts, addToCart, updateCartItem, removeItem, renderCartScreen };

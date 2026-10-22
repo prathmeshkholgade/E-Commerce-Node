@@ -13,13 +13,12 @@ module.exports = (sequelize, DataTypes) => {
 
       product.belongsTo(models.user, {
         foreignKey: "userId"
-      })
+      });
 
       product.hasMany(models.Review, {
         foreignKey: "productId",
-        onDelete: "CASCADE"
-
-      })
+        // onDelete: "CASCADE"
+      });
       // define association here
     }
   }
@@ -29,17 +28,25 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
 
-    price: { type: DataTypes.STRING, allowNull: false },
+    price: { type: DataTypes.INTEGER, allowNull: false },
 
     image: {
       type: DataTypes.STRING,
       allowNull: true
     },
+
     description: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    userId: { type: DataTypes.INTEGER, allowNull: false }
+
+    userId: {
+      type: DataTypes.INTEGER, allowNull: false, references: {
+        model: "users",
+        key: "id"
+      }
+    }
+
   }, {
     sequelize,
     modelName: 'product',
